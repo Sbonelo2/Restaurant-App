@@ -13,9 +13,17 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { MainStackParamList } from '../../navigation/MainNavigator';
-import { processPayment } from '../../services/payment';
+import { RootState } from '../../store';
 import { clearCart } from '../../store/cartSlice';
-import { RootState } from '../../store/store';
+
+// Mock payment service
+const paymentService = {
+  processPayment: async (orderData: any) => {
+    // Simulate payment processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return { success: true };
+  }
+};
 
 type CheckoutScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Checkout'>;
 
@@ -55,7 +63,7 @@ const CheckoutScreen: React.FC = () => {
         createdAt: new Date().toISOString(),
       };
 
-      await processPayment(orderData);
+      await paymentService.processPayment(orderData);
       dispatch(clearCart() as any);
       
       Alert.alert(

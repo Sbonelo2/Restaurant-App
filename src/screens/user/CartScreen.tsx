@@ -12,8 +12,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import CartItem from '../../components/CartItem';
 import { MainStackParamList } from '../../navigation/MainNavigator';
+import { RootState } from '../../store';
 import { removeFromCart, updateQuantity } from '../../store/cartSlice';
-import { RootState } from '../../store/store';
 
 type CartScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Cart'>;
 

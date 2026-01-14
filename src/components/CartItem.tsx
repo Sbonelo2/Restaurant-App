@@ -20,7 +20,7 @@ interface CartItemProps {
   onUpdateQuantity: (quantity: number) => void;
 }
 
-const CartItemComponent: React.FC<CartItemProps> = ({ item, onRemove, onUpdateQuantity }) => {
+const CartItem: React.FC<CartItemProps> = ({ item, onRemove, onUpdateQuantity }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CartItemComponent;
+export default CartItem;

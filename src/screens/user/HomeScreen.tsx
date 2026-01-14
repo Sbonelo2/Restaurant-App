@@ -13,8 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import CategoryTabs from '../../components/CategoryTabs';
 import FoodCard from '../../components/FoodCard';
 import { MainStackParamList } from '../../navigation/MainNavigator';
+import { RootState } from '../../store';
 import { fetchFoodItems } from '../../store/foodSlice';
-import { RootState } from '../../store/store';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Home'>;
 

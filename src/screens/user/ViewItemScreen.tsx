@@ -13,8 +13,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import QuantitySelector from '../../components/QuantitySelector';
 import { MainStackParamList } from '../../navigation/MainNavigator';
+import { RootState } from '../../store';
 import { addToCart } from '../../store/cartSlice';
-import { RootState } from '../../store/store';
 
 type ViewItemScreenRouteProp = RouteProp<MainStackParamList, 'ViewItem'>;
 
