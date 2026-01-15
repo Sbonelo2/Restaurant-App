@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
+import { COLORS } from '../constants';
 import DashboardScreen from '../screens/admin/DashboardScreen';
 import ManageFoodScreen from '../screens/admin/ManageFoodScreen';
 import OrdersScreen from '../screens/admin/OrdersScreen';
@@ -39,7 +40,7 @@ const AdminNavigator: React.FC = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#FF6B6B',
+        tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}
@@ -47,7 +48,7 @@ const AdminNavigator: React.FC = () => {
       <Tab.Screen 
         name="Dashboard" 
         component={DashboardScreen}
-        options={{ title: 'Dashboard' }}
+        options={{ title: 'KomEat Admin' }}
       />
       <Tab.Screen 
         name="ManageFood" 

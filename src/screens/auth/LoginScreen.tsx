@@ -13,6 +13,7 @@ import {
     View,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { COLORS } from '../../constants';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { login } from '../../store/authSlice';
 
@@ -50,7 +51,7 @@ const LoginScreen: React.FC = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
-          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.title}>Welcome to KomEat</Text>
           <Text style={styles.subtitle}>Sign in to your account</Text>
 
           <View style={styles.inputContainer}>
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   button: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 16,
     alignItems: 'center',
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
   buttonText: {
-    color: '#fff',
+    color: COLORS.secondary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    color: '#FF6B6B',
+    color: COLORS.primary,
     fontSize: 14,
   },
 });

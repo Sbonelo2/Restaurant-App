@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   activeTab: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#000',
   },
   tabText: {
     fontSize: 14,

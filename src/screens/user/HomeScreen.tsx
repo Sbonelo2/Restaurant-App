@@ -2,16 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    View
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import CategoryTabs from '../../components/CategoryTabs';
 import FoodCard from '../../components/FoodCard';
+import { COLORS, RESTAURANT_NAME, RESTAURANT_TAGLINE } from '../../constants';
 import { MainStackParamList } from '../../navigation/MainNavigator';
 import { RootState } from '../../store';
 import { fetchFoodItems } from '../../store/foodSlice';
@@ -61,8 +62,8 @@ const HomeScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Restaurant App</Text>
-        <Text style={styles.headerSubtitle}>Delicious food delivered fast</Text>
+        <Text style={styles.headerTitle}>{RESTAURANT_NAME}</Text>
+        <Text style={styles.headerSubtitle}>{RESTAURANT_TAGLINE}</Text>
       </View>
 
       <CategoryTabs
@@ -73,7 +74,7 @@ const HomeScreen: React.FC = () => {
 
       {loading && !refreshing ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B6B" />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       ) : (
         <FlatList
@@ -103,19 +104,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: COLORS.primary,
     padding: 20,
     paddingTop: 40,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: COLORS.secondary,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#fff',
+    color: COLORS.secondary,
     opacity: 0.9,
   },
   listContainer: {

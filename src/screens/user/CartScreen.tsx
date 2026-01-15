@@ -2,15 +2,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import {
-    Alert,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import CartItem from '../../components/CartItem';
+import { COLORS } from '../../constants';
 import { MainStackParamList } from '../../navigation/MainNavigator';
 import { RootState } from '../../store';
 import { removeFromCart, updateQuantity } from '../../store/cartSlice';
@@ -143,13 +144,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   shopButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
   shopButtonText: {
-    color: '#fff',
+    color: COLORS.secondary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -173,16 +174,16 @@ const styles = StyleSheet.create({
   totalAmount: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FF6B6B',
+    color: COLORS.primary,
   },
   checkoutButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 16,
     alignItems: 'center',
   },
   checkoutButtonText: {
-    color: '#fff',
+    color: COLORS.secondary,
     fontSize: 16,
     fontWeight: '600',
   },

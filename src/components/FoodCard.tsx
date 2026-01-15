@@ -30,7 +30,7 @@ const FoodCard: React.FC<Props> = ({ item, onPress }) => {
         <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
         <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
         <View style={styles.footer}>
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
           <View style={[styles.availabilityBadge, !item.available && styles.unavailable]}>
             <Text style={[styles.availabilityText, !item.available && styles.unavailableText]}>
               {item.available ? 'Available' : 'Out of Stock'}
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FF6B6B',
+    color: '#000',
   },
   availabilityBadge: {
     backgroundColor: '#4CAF50',

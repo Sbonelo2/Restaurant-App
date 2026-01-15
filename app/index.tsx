@@ -8,7 +8,7 @@ export default function Index() {
   return (
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#FF6B6B" />
+        <StatusBar barStyle="light-content" backgroundColor="#000" />
         <AppNavigator />
       </SafeAreaView>
     </Provider>
@@ -18,6 +18,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#000',
   },
 });

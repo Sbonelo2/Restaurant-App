@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
+import { COLORS } from '../constants';
 import CartScreen from '../screens/user/CartScreen';
 import CheckoutScreen from '../screens/user/CheckoutScreen';
 import HomeScreen from '../screens/user/HomeScreen';
@@ -63,7 +64,7 @@ const MainNavigator: React.FC = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#FF6B6B',
+        tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}
@@ -71,7 +72,7 @@ const MainNavigator: React.FC = () => {
       <Tab.Screen 
         name="HomeStack" 
         component={HomeStackNavigator}
-        options={{ title: 'Home' }}
+        options={{ title: 'KomEat' }}
       />
       <Tab.Screen 
         name="CartStack" 

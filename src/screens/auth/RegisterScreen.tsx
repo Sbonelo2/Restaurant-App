@@ -13,6 +13,7 @@ import {
     View,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { COLORS } from '../../constants';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { register } from '../../store/authSlice';
 
@@ -62,7 +63,7 @@ const RegisterScreen: React.FC = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
-          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.title}>Join KomEat</Text>
           <Text style={styles.subtitle}>Sign up to get started</Text>
 
           <View style={styles.inputContainer}>
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   button: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 16,
     alignItems: 'center',
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
   buttonText: {
-    color: '#fff',
+    color: COLORS.secondary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    color: '#FF6B6B',
+    color: COLORS.primary,
     fontSize: 14,
   },
 });

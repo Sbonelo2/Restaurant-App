@@ -27,7 +27,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove, onUpdateQuantity })
       
       <View style={styles.content}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.price}>R{item.price.toFixed(2)}</Text>
         
         <View style={styles.actions}>
           <QuantitySelector
@@ -44,7 +44,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove, onUpdateQuantity })
       
       <View style={styles.totalContainer}>
         <Text style={styles.totalLabel}>Total</Text>
-        <Text style={styles.total}>${(item.price * item.quantity).toFixed(2)}</Text>
+        <Text style={styles.total}>R{(item.price * item.quantity).toFixed(2)}</Text>
       </View>
     </View>
   );
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   total: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FF6B6B',
+    color: '#000',
   },
 });
 
