@@ -45,7 +45,8 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = !!user;
 
   // Mock customization options
   const customizationOptions: CustomizationOptions = {

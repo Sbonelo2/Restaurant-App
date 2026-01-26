@@ -1,20 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authSlice from './authSlice';
-import cartSlice from './cartSlice';
-import foodSlice from './foodSlice';
+import authReducer from './authSlice';
+import cartReducer from './cartSlice';
+import foodReducer from './foodSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice,
-    cart: cartSlice,
-    food: foodSlice,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
-      },
-    }),
+    auth: authReducer,
+    cart: cartReducer,
+    food: foodReducer
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -39,6 +39,8 @@ export const COLORS = {
   warning: '#333333',
   error: '#000000',
   border: '#E0E0E0',
+  white: '#FFFFFF',
+  primaryLight: '#666666',
 };
 
 export const SIZES = {
