@@ -1,387 +1,567 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  FlatList,
+  Alert,
+  Dimensions,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootState } from '../../store';
-import { fetchFoodItems } from '../../store/foodSlice';
+import { COLORS, SPACING } from '../../constants';
 
-interface DashboardStats {
-  totalOrders: number;
-  totalRevenue: number;
-  totalUsers: number;
-  totalFoodItems: number;
-  pendingOrders: number;
-  completedOrders: number;
+interface TabName {
+  id: string;
+  name: string;
 }
 
-const AdminDashboardScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalOrders: 156,
-    totalRevenue: 4589.50,
-    totalUsers: 89,
-    totalFoodItems: 24,
-    pendingOrders: 12,
-    completedOrders: 144,
-  });
-  const [loading, setLoading] = useState(false);
+const TABS: TabName[] = [
+  { id: 'overview', name: 'Overview' },
+  { id: 'orders', name: 'Orders' },
+  { id: 'menu', name: 'Menu' },
+  { id: 'analytics', name: 'Analytics' },
+];
 
-  const { user } = useSelector((state: RootState) => state.auth);
-  const { items: foodItems } = useSelector((state: RootState) => state.food);
+type AdminScreenNavigationProp = NativeStackNavigationProp<any>;
+
+const AdminDashboardScreen: React.FC = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation<AdminScreenNavigationProp>();
+  const { orders } = useSelector((state: RootState) => state.orders);
+  const { items: foodItems } = useSelector((state: RootState) => state.food);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  useEffect(() => {
-    dispatch(fetchFoodItems() as any);
-  }, [dispatch]);
+  // Calculate statistics
+  const totalOrders = orders.length;
+  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
+  const availableItems = foodItems.filter(item => item.available).length;
 
-  useEffect(() => {
-    setStats(prev => ({
-      ...prev,
-      totalFoodItems: foodItems.length,
-    }));
-  }, [foodItems]);
+  const renderOverviewTab = () => (
+    <View>
+      <View style={styles.statsGrid}>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>{totalOrders}</Text>
+          <Text style={styles.statLabel}>Total Orders</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>${totalRevenue.toFixed(0)}</Text>
+          <Text style={styles.statLabel}>Revenue</Text>
+        </View>
+      </View>
 
-  const handleRefresh = async () => {
-    setLoading(true);
-    try {
-      // Simulate API call to refresh stats
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStats({
-        totalOrders: Math.floor(Math.random() * 200) + 100,
-        totalRevenue: Math.floor(Math.random() * 5000) + 2000,
-        totalUsers: Math.floor(Math.random() * 100) + 50,
-        totalFoodItems: foodItems.length,
-        pendingOrders: Math.floor(Math.random() * 20) + 5,
-        completedOrders: Math.floor(Math.random() * 150) + 100,
-      });
-    } catch (error) {
-      Alert.alert('Error', 'Failed to refresh dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+      <View style={styles.statsGrid}>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>{pendingOrders}</Text>
+          <Text style={styles.statLabel}>Pending Orders</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>{deliveredOrders}</Text>
+          <Text style={styles.statLabel}>Delivered</Text>
+        </View>
+      </View>
 
-  const StatCard: React.FC<{ title: string; value: string | number; subtitle?: string; color: string }> = 
-    ({ title, value, subtitle, color }) => (
-    <View style={[styles.statCard, { borderLeftColor: color }]}>
-      <Text style={styles.statTitle}>{title}</Text>
-      <Text style={styles.statValue}>{value}</Text>
-      {subtitle && <Text style={styles.statSubtitle}>{subtitle}</Text>}
+      <View style={styles.statsGrid}>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>{foodItems.length}</Text>
+          <Text style={styles.statLabel}>Menu Items</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statValue}>{availableItems}</Text>
+          <Text style={styles.statLabel}>Available</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.actionButton}>
+        <Text style={styles.actionButtonText}> View Detailed Analytics</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.actionButton}>
+        <Text style={styles.actionButtonText}> Manage Restaurant Settings</Text>
+      </TouchableOpacity>
     </View>
   );
 
-  const QuickAction: React.FC<{ title: string; icon: string; onPress: () => void; color: string }> = 
-    ({ title, icon, onPress, color }) => (
-    <TouchableOpacity style={[styles.quickAction, { backgroundColor: color }]} onPress={onPress}>
-      <Text style={styles.quickActionIcon}>{icon}</Text>
-      <Text style={styles.quickActionTitle}>{title}</Text>
-    </TouchableOpacity>
+  const renderOrdersTab = () => (
+    <View>
+      <View style={styles.filterBar}>
+        <TouchableOpacity style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>Pending</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>Delivered</Text>
+        </TouchableOpacity>
+      </View>
+
+      {orders.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>No orders yet</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders.slice(0, 10)}
+          renderItem={({ item }) => (
+            <View style={styles.orderCard}>
+              <View style={styles.orderHeader}>
+                <Text style={styles.orderId}>Order #{item.id}</Text>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+                  <Text style={styles.statusText}>{item.status}</Text>
+                </View>
+              </View>
+              <Text style={styles.orderDetails}>
+                Customer: {item.userName}
+              </Text>
+              <Text style={styles.orderDetails}>
+                Items: {item.items.length} | Total: ${item.total.toFixed(2)}
+              </Text>
+              <Text style={styles.orderDetails}>
+                Address: {item.deliveryAddress}
+              </Text>
+              <View style={styles.orderActions}>
+                <TouchableOpacity style={styles.actionBtnSmall}>
+                  <Text style={styles.actionBtnText}>View</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionBtnSmall}>
+                  <Text style={styles.actionBtnText}>Update</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
+      )}
+    </View>
   );
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome back, {user?.name}!</Text>
-        <Text style={styles.subtitleText}>Here's your restaurant overview</Text>
-      </View>
+  const renderMenuTab = () => (
+    <View>
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.addButtonText}>+ Add New Item</Text>
+      </TouchableOpacity>
 
-      {/* Stats Grid */}
-      <View style={styles.statsGrid}>
-        <StatCard
-          title="Total Orders"
-          value={stats.totalOrders}
-          subtitle={`${stats.pendingOrders} pending`}
-          color="#FF6B6B"
-        />
-        <StatCard
-          title="Revenue"
-          value={`$${stats.totalRevenue.toFixed(2)}`}
-          subtitle="This month"
-          color="#4ECDC4"
-        />
-        <StatCard
-          title="Total Users"
-          value={stats.totalUsers}
-          subtitle="Active customers"
-          color="#45B7D1"
-        />
-        <StatCard
-          title="Food Items"
-          value={stats.totalFoodItems}
-          subtitle="In menu"
-          color="#96CEB4"
-        />
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.quickActionsGrid}>
-          <QuickAction
-            title="Manage Food"
-            icon="🍔"
-            onPress={() => navigation.navigate('ManageFood')}
-            color="#FF6B6B"
-          />
-          <QuickAction
-            title="Orders"
-            icon="📋"
-            onPress={() => navigation.navigate('OrderManagement')}
-            color="#4ECDC4"
-          />
-          <QuickAction
-            title="Analytics"
-            icon="📊"
-            onPress={() => Alert.alert('Coming Soon', 'Analytics feature coming soon!')}
-            color="#45B7D1"
-          />
-          <QuickAction
-            title="Settings"
-            icon="⚙️"
-            onPress={() => Alert.alert('Coming Soon', 'Settings feature coming soon!')}
-            color="#96CEB4"
-          />
+      {foodItems.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>No menu items yet</Text>
         </View>
-      </View>
+      ) : (
+        <FlatList
+          data={foodItems}
+          renderItem={({ item }) => (
+            <View style={styles.menuItemCard}>
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuItemName}>{item.name}</Text>
+                <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+                <Text style={styles.menuItemCategory}>{item.category}</Text>
+              </View>
+              <View style={styles.menuItemActions}>
+                <TouchableOpacity style={styles.menuActionBtn}>
+                  <Text style={styles.menuActionBtnText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.menuActionBtn, styles.deletBtn]}>
+                  <Text style={styles.deleteActionBtnText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
+      )}
+    </View>
+  );
 
-      {/* Recent Activity */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <TouchableOpacity onPress={handleRefresh} disabled={loading}>
-            {loading ? (
-              <ActivityIndicator size="small" color="#FF6B6B" />
-            ) : (
-              <Text style={styles.refreshText}>Refresh</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.activityList}>
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <Text style={styles.activityIconText}>📦</Text>
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={styles.activityTitle}>New order received</Text>
-              <Text style={styles.activityTime}>2 minutes ago</Text>
-            </View>
-            <Text style={styles.activityValue}>Order #1234</Text>
-          </View>
-
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <Text style={styles.activityIconText}>👤</Text>
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={styles.activityTitle}>New user registered</Text>
-              <Text style={styles.activityTime}>15 minutes ago</Text>
-            </View>
-            <Text style={styles.activityValue}>john.doe@email.com</Text>
-          </View>
-
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <Text style={styles.activityIconText}>✅</Text>
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={styles.activityTitle}>Order completed</Text>
-              <Text style={styles.activityTime}>1 hour ago</Text>
-            </View>
-            <Text style={styles.activityValue}>Order #1233</Text>
-          </View>
-
-          <View style={styles.activityItem}>
-            <View style={styles.activityIcon}>
-              <Text style={styles.activityIconText}>🍔</Text>
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={styles.activityTitle}>New food item added</Text>
-              <Text style={styles.activityTime}>2 hours ago</Text>
-            </View>
-            <Text style={styles.activityValue}>Deluxe Burger</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Performance Chart Placeholder */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sales Overview</Text>
+  const renderAnalyticsTab = () => (
+    <View>
+      <View style={styles.chartContainer}>
+        <Text style={styles.chartTitle}>Order Trends</Text>
         <View style={styles.chartPlaceholder}>
-          <Text style={styles.chartPlaceholderText}>📊</Text>
-          <Text style={styles.chartPlaceholderSubtext}>Sales analytics coming soon</Text>
+          <Text style={styles.chartPlaceholderText}> Chart visualization here</Text>
         </View>
       </View>
-    </ScrollView>
+
+      <View style={styles.chartContainer}>
+        <Text style={styles.chartTitle}>Revenue Distribution</Text>
+        <View style={styles.chartPlaceholder}>
+          <Text style={styles.chartPlaceholderText}> Revenue chart here</Text>
+        </View>
+      </View>
+
+      <View style={styles.chartContainer}>
+        <Text style={styles.chartTitle}>Top Items</Text>
+        <FlatList
+          data={foodItems.slice(0, 5)}
+          renderItem={({ item }) => (
+            <View style={styles.topItemRow}>
+              <Text style={styles.topItemName}>{item.name}</Text>
+              <Text style={styles.topItemPrice}>${item.price.toFixed(2)}</Text>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
+      </View>
+
+      <View style={styles.exportSection}>
+        <TouchableOpacity style={styles.exportButton}>
+          <Text style={styles.exportButtonText}> Export Report</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return '#FFC107';
+      case 'confirmed':
+        return '#0066CC';
+      case 'preparing':
+        return '#FF6B6B';
+      case 'ready':
+        return '#51CF66';
+      case 'delivered':
+        return '#2F9E44';
+      default:
+        return '#666666';
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Admin Dashboard</Text>
+      </View>
+
+      {/* Tab Navigation */}
+      <View style={styles.tabContainer}>
+        <FlatList
+          data={TABS}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.tab, activeTab === item.id && styles.activeTab]}
+              onPress={() => setActiveTab(item.id)}
+            >
+              <Text style={[styles.tabText, activeTab === item.id && styles.activeTabText]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      </View>
+
+      {/* Tab Content */}
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
+        {activeTab === 'overview' && renderOverviewTab()}
+        {activeTab === 'orders' && renderOrdersTab()}
+        {activeTab === 'menu' && renderMenuTab()}
+        {activeTab === 'analytics' && renderAnalyticsTab()}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.secondary,
   },
   header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    marginBottom: 16,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    backgroundColor: COLORS.primary,
   },
-  welcomeText: {
+  headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: COLORS.secondary,
   },
-  subtitleText: {
-    fontSize: 16,
-    color: '#666',
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.secondary,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    paddingHorizontal: SPACING.md,
+  },
+  tab: {
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.md,
+    marginRight: SPACING.lg,
+  },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.primary,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.textLight,
+  },
+  activeTabText: {
+    color: COLORS.primary,
+  },
+  content: {
+    flex: 1,
+  },
+  contentContainer: {
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    paddingBottom: SPACING.xl,
   },
   statsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    marginBottom: 24,
+    justifyContent: 'space-between',
+    marginBottom: SPACING.lg,
   },
   statCard: {
-    width: '48%',
-    backgroundColor: '#fff',
-    padding: 16,
+    flex: 0.48,
+    backgroundColor: '#F8F8F8',
     borderRadius: 12,
-    marginBottom: 12,
-    marginRight: '1%',
-    marginLeft: '1%',
-    borderLeftWidth: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  statTitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
+    padding: SPACING.lg,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    fontSize: 28,
+    fontWeight: '700',
+    color: COLORS.primary,
+    marginBottom: SPACING.sm,
   },
-  statSubtitle: {
+  statLabel: {
     fontSize: 12,
-    color: '#999',
-  },
-  section: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  refreshText: {
-    color: '#FF6B6B',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  quickAction: {
-    width: '48%',
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  quickActionIcon: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  quickActionTitle: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: COLORS.textLight,
     textAlign: 'center',
   },
-  activityList: {
-    marginTop: 8,
+  actionButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: SPACING.md,
   },
-  activityItem: {
+  actionButtonText: {
+    color: COLORS.secondary,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  filterBar: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    marginBottom: SPACING.lg,
   },
-  activityIcon: {
-    width: 40,
-    height: 40,
+  filterButton: {
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    backgroundColor: COLORS.border,
     borderRadius: 20,
-    backgroundColor: '#f8f9fa',
-    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  filterButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  orderCard: {
+    backgroundColor: '#F8F8F8',
+    borderRadius: 8,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  orderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginRight: 12,
+    marginBottom: SPACING.sm,
   },
-  activityIconText: {
-    fontSize: 20,
+  orderId: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
-  activityContent: {
+  statusBadge: {
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: 4,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: COLORS.secondary,
+  },
+  orderDetails: {
+    fontSize: 12,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+  },
+  orderActions: {
+    flexDirection: 'row',
+    marginTop: SPACING.md,
+  },
+  actionBtnSmall: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: 4,
+    marginRight: SPACING.sm,
+  },
+  actionBtnText: {
+    color: COLORS.secondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xl,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: COLORS.textLight,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+  },
+  addButtonText: {
+    color: COLORS.secondary,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  menuItemCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F8F8F8',
+    borderRadius: 8,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  menuItemContent: {
     flex: 1,
   },
-  activityTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
-  },
-  activityTime: {
-    fontSize: 12,
-    color: '#999',
-  },
-  activityValue: {
+  menuItemName: {
     fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+  },
+  menuItemPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.primary,
+    marginBottom: SPACING.xs,
+  },
+  menuItemCategory: {
+    fontSize: 12,
+    color: COLORS.textLight,
+  },
+  menuItemActions: {
+    flexDirection: 'row',
+  },
+  menuActionBtn: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: 4,
+    marginLeft: SPACING.sm,
+  },
+  deletBtn: {
+    backgroundColor: '#DC3545',
+  },
+  menuActionBtnText: {
+    color: COLORS.secondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  deleteActionBtnText: {
+    color: COLORS.secondary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  chartContainer: {
+    backgroundColor: '#F8F8F8',
+    borderRadius: 8,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  chartTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.primary,
+    marginBottom: SPACING.md,
   },
   chartPlaceholder: {
     height: 200,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.border,
+    borderStyle: 'dashed',
   },
   chartPlaceholderText: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  chartPlaceholderSubtext: {
     fontSize: 14,
-    color: '#999',
+    color: COLORS.textLight,
+  },
+  topItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  topItemName: {
+    fontSize: 14,
+    color: COLORS.text,
+  },
+  topItemPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.primary,
+  },
+  exportSection: {
+    alignItems: 'center',
+    marginTop: SPACING.lg,
+  },
+  exportButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: 8,
+  },
+  exportButtonText: {
+    color: COLORS.secondary,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 
