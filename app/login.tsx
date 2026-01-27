@@ -28,6 +28,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    console.log("Login button pressed");
+    console.log("Email:", email);
+    console.log("Password:", password ? "***" : "");
+    
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
@@ -35,19 +39,24 @@ export default function Login() {
 
     setLoading(true);
     dispatch(loginStart());
+    console.log("Starting login process...");
 
     try {
       // Sign in with Firebase
+      console.log("Attempting Firebase sign in...");
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email.trim(),
         password
       );
+      console.log("Firebase sign in successful:", userCredential.user.uid);
 
       // Get user data from Firestore
+      console.log("Fetching user data from Firestore...");
       const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
 
       if (userDoc.exists()) {
+        console.log("User data found:", userDoc.data());
         const userData = userDoc.data();
         const userProfile = {
           id: userCredential.user.uid,
@@ -61,17 +70,21 @@ export default function Login() {
         };
 
         dispatch(loginSuccess(userProfile));
+        console.log("Login successful, navigating to home...");
         Alert.alert("Success", "Login successful!");
         router.replace("/home");
       } else {
+        console.log("User data not found in Firestore");
         dispatch(loginFailure("User data not found"));
         Alert.alert("Error", "User data not found. Please register again.");
       }
     } catch (error: any) {
+      console.error("Login error:", error);
       dispatch(loginFailure(error.message));
       Alert.alert("Error", error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
+      console.log("Login process completed");
     }
   };
 

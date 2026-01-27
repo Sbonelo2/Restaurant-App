@@ -1,6 +1,4 @@
-﻿import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+﻿import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import {
@@ -16,11 +14,8 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { COLORS } from '../../constants';
-import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { auth, db } from '../../services/firebase';
 import { loginFailure, loginStart, loginSuccess } from '../../store/authSlice';
-
-type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +23,6 @@ const LoginScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   
   const dispatch = useDispatch();
-  const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -121,7 +115,7 @@ const LoginScreen: React.FC = () => {
 
           <TouchableOpacity 
             style={styles.linkButton}
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => console.log('Navigate to register')}
           >
             <Text style={styles.linkText}>
               Do not have an account? Sign Up
