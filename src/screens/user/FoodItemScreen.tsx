@@ -112,7 +112,7 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
     };
 
     setTimeout(() => {
-      dispatch(addToCart({ item: cartItem, quantity }));
+      dispatch(addToCart(cartItem));
       setLoading(false);
       Alert.alert('Success', 'Item added to cart!');
     }, 500);

@@ -1,30 +1,25 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    addItem,
-    clearCart,
-    removeItem,
-    updateQuantity
-} from '../store/foodSlice';
+import { addToCart, clearCart, removeFromCart, updateQuantity } from '../store/cartSlice';
 import { RootState } from '../store/store';
 import { CartItem, DeliveryOption } from '../types';
 
 export const useCart = () => {
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.food.cart);
+  const cart = useSelector((state: RootState) => state.cart);
 
-  const addToCart = (item: CartItem) => {
-    dispatch(addItem(item));
+  const addItemToCart = (item: CartItem) => {
+    dispatch(addToCart(item));
   };
 
-  const removeFromCart = (itemId: string) => {
-    dispatch(removeItem(itemId));
+  const removeItemFromCart = (itemId: string) => {
+    dispatch(removeFromCart(itemId));
   };
 
   const updateItemQuantity = (itemId: string, quantity: number) => {
     if (quantity <= 0) {
-      dispatch(removeItem(itemId));
+      dispatch(removeFromCart(itemId));
     } else {
-      dispatch(updateQuantity({ itemId, quantity }));
+      dispatch(updateQuantity({ id: itemId, quantity }));
     }
   };
 
@@ -33,26 +28,27 @@ export const useCart = () => {
   };
 
   const setDeliveryOption = (option: DeliveryOption) => {
-    dispatch(setDeliveryOption(option));
+    // TODO: Implement delivery option in cart slice
+    console.log('Setting delivery option:', option);
   };
 
   const getTotalItems = () => {
-    return cart.items.reduce((total, item) => total + item.quantity, 0);
+    return cart.items.reduce((total: number, item: any) => total + item.quantity, 0);
   };
 
   const getItemQuantity = (itemId: string) => {
-    const item = cart.items.find(item => item.id === itemId);
+    const item = cart.items.find((item: any) => item.id === itemId);
     return item ? item.quantity : 0;
   };
 
   const isItemInCart = (itemId: string) => {
-    return cart.items.some(item => item.id === itemId);
+    return cart.items.some((item: any) => item.id === itemId);
   };
 
   return {
     cart,
-    addToCart,
-    removeFromCart,
+    addToCart: addItemToCart,
+    removeFromCart: removeItemFromCart,
     updateItemQuantity,
     clearCartItems,
     setDeliveryOption,

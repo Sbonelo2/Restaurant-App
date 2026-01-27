@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { COLORS, SPACING } from '../../constants';
 import { RootState } from '../../store';
+import { Order } from '../../store/ordersSlice';
 
 interface TabName {
   id: string;
@@ -31,15 +32,15 @@ type AdminScreenNavigationProp = NativeStackNavigationProp<any>;
 const AdminDashboardScreen: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<AdminScreenNavigationProp>();
-  const { orders } = useSelector((state: RootState) => state.orders);
+  const { orders } = useSelector((state: any) => state.orders);
   const { items: foodItems } = useSelector((state: RootState) => state.food);
   const [activeTab, setActiveTab] = useState('overview');
 
   // Calculate statistics
   const totalOrders = orders.length;
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
-  const pendingOrders = orders.filter(o => o.status === 'pending').length;
-  const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
+  const totalRevenue = orders.reduce((sum: number, order: Order) => sum + order.total, 0);
+  const pendingOrders = orders.filter((order: Order) => order.status === 'pending').length;
+  const deliveredOrders = orders.filter((order: Order) => order.status === 'delivered').length;
   const availableItems = foodItems.filter(item => item.available).length;
 
   const renderOverviewTab = () => (

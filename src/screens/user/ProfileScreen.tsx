@@ -1,23 +1,44 @@
 import React, { useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { COLORS, SPACING } from '../../constants';
 import { RootState } from '../../store';
 import { logout, updateProfile } from '../../store/authSlice';
 
+interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  surname?: string;
+  phone?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  cardDetails?: {
+    cardNumber: string;
+    expiryDate: string;
+    cvv: string;
+    cardholderName: string;
+  };
+  role: 'user' | 'admin';
+}
+
 const ProfileScreen: React.FC = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth) as { user: UserProfile | null };
   const [isEditing, setIsEditing] = useState(false);
 
   // Form states
