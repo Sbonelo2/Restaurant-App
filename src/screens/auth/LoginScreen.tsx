@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+﻿import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import {
@@ -102,7 +102,7 @@ const LoginScreen: React.FC = () => {
             onPress={() => navigation.navigate('Register')}
           >
             <Text style={styles.linkText}>
-              Don't have an account? Sign Up
+              Do not have an account? Sign Up
             </Text>
           </TouchableOpacity>
         </View>
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
 //             onPress={() => navigation.navigate('Register')}
 //           >
 //             <Text style={styles.linkText}>
-//               Don't have an account? Sign Up
+//               Do not have an account? Sign Up
 //             </Text>
 //           </TouchableOpacity>
 //         </View>
@@ -351,3 +351,4 @@ const styles = StyleSheet.create({
 // });
 
 export default LoginScreen;
+

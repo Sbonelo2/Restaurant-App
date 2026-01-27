@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { MOCK_FOOD_ITEMS } from '../constants/mockData';
 
 interface FoodItem {
   id: string;
@@ -19,7 +20,7 @@ interface FoodState {
 }
 
 const initialState: FoodState = {
-  items: [],
+  items: MOCK_FOOD_ITEMS,
   loading: false,
   error: null,
 };
@@ -55,20 +56,8 @@ const foodSlice = createSlice({
 export const fetchFoodItems = () => (dispatch: any) => {
   dispatch(fetchFoodItemsStart());
   setTimeout(() => {
-    const mockData: FoodItem[] = [
-      {
-        id: '1',
-        name: 'Burger',
-        description: 'Delicious beef burger',
-        price: 12.99,
-        category: 'Main Course',
-        ingredients: ['Beef', 'Bun', 'Lettuce', 'Tomato'],
-        allergens: ['Gluten'],
-        available: true,
-      },
-    ];
-    dispatch(fetchFoodItemsSuccess(mockData));
-  }, 1000);
+    dispatch(fetchFoodItemsSuccess(MOCK_FOOD_ITEMS));
+  }, 500);
 };
 
 export const { fetchFoodItemsStart, fetchFoodItemsSuccess, addFoodItem, updateFoodItem, deleteFoodItem } = foodSlice.actions;
