@@ -1,44 +1,41 @@
-﻿import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import { useRouter } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useDispatch } from 'react-redux';
-import { COLORS } from '../../constants';
-import { AuthStackParamList } from '../../navigation/AuthNavigator';
-import { auth, db } from '../../services/firebase';
-import { loginFailure, loginStart, loginSuccess } from '../../store/authSlice';
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import { useDispatch } from "react-redux";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+import { COLORS } from "../src/constants";
+import { auth, db } from "../src/services/firebase";
+import { loginFailure, loginStart, loginSuccess } from "../src/store/authSlice";
 
-const LoginScreen: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  
+export default function Login() {
+  const router = useRouter();
   const dispatch = useDispatch();
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     setLoading(true);
     dispatch(loginStart());
-    
+
     try {
       // Sign in with Firebase
       const userCredential = await signInWithEmailAndPassword(
@@ -48,39 +45,40 @@ const LoginScreen: React.FC = () => {
       );
 
       // Get user data from Firestore
-      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-      
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const userProfile = {
           id: userCredential.user.uid,
           email: userData.email || email,
-          name: userData.name || 'User',
-          surname: userData.surname || '',
-          phone: userData.phone || '',
+          name: userData.name || "User",
+          surname: userData.surname || "",
+          phone: userData.phone || "",
           address: userData.address || undefined,
           cardDetails: userData.cardDetails || undefined,
-          role: userData.role || 'user' as const,
+          role: userData.role || "user" as const,
         };
-        
+
         dispatch(loginSuccess(userProfile));
-        Alert.alert('Success', 'Login successful!');
+        Alert.alert("Success", "Login successful!");
+        router.replace("/home");
       } else {
-        dispatch(loginFailure('User data not found'));
-        Alert.alert('Error', 'User data not found. Please register again.');
+        dispatch(loginFailure("User data not found"));
+        Alert.alert("Error", "User data not found. Please register again.");
       }
     } catch (error: any) {
       dispatch(loginFailure(error.message));
-      Alert.alert('Error', error.message || 'Login failed. Please try again.');
+      Alert.alert("Error", error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
@@ -109,19 +107,19 @@ const LoginScreen: React.FC = () => {
             />
           </View>
 
-          <TouchableOpacity 
-            style={[styles.button, loading && styles.buttonDisabled]} 
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleLogin}
             disabled={loading}
           >
             <Text style={styles.buttonText}>
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? "Signing In..." : "Sign In"}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.linkButton}
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => router.push("/register")}
           >
             <Text style={styles.linkText}>
               Do not have an account? Sign Up
@@ -131,16 +129,16 @@ const LoginScreen: React.FC = () => {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   content: {
     paddingHorizontal: 24,
@@ -148,15 +146,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.primary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: COLORS.textLight,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 32,
   },
   inputContainer: {
@@ -169,31 +167,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   button: {
     backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 16,
   },
   buttonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
   },
   buttonText: {
     color: COLORS.secondary,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   linkButton: {
     marginTop: 24,
-    alignItems: 'center',
+    alignItems: "center",
   },
   linkText: {
     color: COLORS.primary,
     fontSize: 14,
   },
 });
-
-export default LoginScreen;

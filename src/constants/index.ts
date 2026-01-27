@@ -10,7 +10,7 @@ export const CATEGORIES = [
 
 export const DELIVERY_OPTIONS = [
   { id: 'pickup', name: 'Pickup', time: '15-20 min', fee: 0 },
-  { id: 'delivery', name: 'Delivery', time: '30-45 min', fee: 2.99 },
+  { id: 'delivery', name: 'Delivery', time: '30-45 min', fee: 50 },
 ];
 
 export const PAYMENT_METHODS = [

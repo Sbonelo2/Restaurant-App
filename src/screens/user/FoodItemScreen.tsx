@@ -53,11 +53,11 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
     sides: ['French Fries', 'Pap', 'Salad', 'Chips', 'Rice'],
     drinks: ['Coke', 'Fanta', 'Sprite', 'Water', 'Juice'],
     extras: [
-      { name: 'Extra Fries', price: 3.99 },
-      { name: 'Extra Cheese', price: 1.99 },
-      { name: 'Bacon', price: 2.99 },
-      { name: 'Avocado', price: 2.49 },
-      { name: 'Extra Sauce', price: 0.99 },
+      { name: 'Extra Fries', price: 35 },
+      { name: 'Extra Cheese', price: 20 },
+      { name: 'Bacon', price: 25 },
+      { name: 'Avocado', price: 30 },
+      { name: 'Extra Sauce', price: 10 },
     ],
     ingredients: [
       { name: 'Lettuce', included: true },
@@ -150,7 +150,7 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.category}>{item.category}</Text>
         <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.price}>Base Price: ${item.price.toFixed(2)}</Text>
+        <Text style={styles.price}>Base Price: R{item.price.toFixed(2)}</Text>
 
         {/* Quantity Selector */}
         <View style={styles.section}>
@@ -240,7 +240,7 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
                 styles.optionText,
                 selectedExtras.includes(extra.name) && styles.optionTextSelected,
               ]}>
-                {extra.name} (+${extra.price.toFixed(2)})
+                {extra.name} (+R{extra.price.toFixed(2)})
               </Text>
             </TouchableOpacity>
           ))}
@@ -271,7 +271,7 @@ const FoodItemScreen: React.FC<FoodItemScreenProps> = ({ route }) => {
         {/* Total Price */}
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>
-            Total: ${calculateTotalPrice().toFixed(2)}
+            Total: R{calculateTotalPrice().toFixed(2)}
           </Text>
         </View>
 
