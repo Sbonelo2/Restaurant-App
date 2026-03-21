@@ -1,55 +1,68 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { getAuth, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
 import { db } from "../../src/services/firebase";
 
-interface UserProfile {
+interface AdminProfile {
   name: string;
   surname: string;
   email: string;
   phone: string;
-  address: string;
-  card: string;
+  role: string;
   createdAt: any;
 }
 
-export default function Profile() {
+export default function AdminProfile() {
   const auth = getAuth();
   const router = useRouter();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const [editProfile, setEditProfile] = useState<AdminProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editProfile, setEditProfile] = useState<UserProfile | null>(null);
   const [saving, setSaving] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       const user = auth.currentUser;
       if (!user) {
-        router.replace("/auth/login");
+        router.replace("../public/auth/login");
         return;
       }
 
       try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setProfile(docSnap.data() as UserProfile);
+        const ref = doc(db, "admins", user.uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          setProfile(snap.data() as AdminProfile);
+        } else {
+          // first time admin
+          const newProfile: AdminProfile = {
+            name: "",
+            surname: "",
+            email: user.email || "",
+            phone: "",
+            role: "admin",
+            createdAt: new Date(),
+          };
+          await setDoc(ref, newProfile);
+          setProfile(newProfile);
         }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
@@ -64,18 +77,19 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
-    if (!editProfile || !profile) return;
+    if (!editProfile) return;
     setSaving(true);
+
     try {
       const user = auth.currentUser;
       if (!user) return;
 
-      await setDoc(doc(db, "users", user.uid), editProfile);
+      await setDoc(doc(db, "admins", user.uid), editProfile);
       setProfile(editProfile);
       setModalVisible(false);
-      Alert.alert("Success", "Profile updated!");
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Alert.alert("Success", "Admin profile updated");
+    } catch (e: any) {
+      Alert.alert("Error", e.message);
     } finally {
       setSaving(false);
     }
@@ -97,14 +111,23 @@ export default function Profile() {
   if (!profile) {
     return (
       <View style={styles.center}>
-        <Text>No profile data found.</Text>
+        <Text>No admin profile found.</Text>
       </View>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>👤 My Profile</Text>
+      {/* BACK BUTTON */}
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => router.push("/admin/dashboard")}
+      >
+        <Text style={styles.backText}>← Back</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.header}>🛠 Admin Profile</Text>
+
       <View style={styles.card}>
         <Text style={styles.label}>Full Name</Text>
         <Text style={styles.value}>
@@ -117,13 +140,10 @@ export default function Profile() {
         <Text style={styles.label}>Phone</Text>
         <Text style={styles.value}>{profile.phone}</Text>
 
-        <Text style={styles.label}>Address</Text>
-        <Text style={styles.value}>{profile.address}</Text>
+        <Text style={styles.label}>Role</Text>
+        <Text style={styles.value}>{profile.role}</Text>
 
-        <Text style={styles.label}>Card Details</Text>
-        <Text style={styles.value}>{profile.card}</Text>
-
-        <Text style={styles.label}>Member Since</Text>
+        <Text style={styles.label}>Admin Since</Text>
         <Text style={styles.value}>
           {profile.createdAt?.toDate
             ? profile.createdAt.toDate().toDateString()
@@ -146,19 +166,20 @@ export default function Profile() {
           <Text style={styles.actionText}>Logout</Text>
         </TouchableOpacity>
       </View>
-      {/* Edit Modal */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+
+      {/* EDIT MODAL */}
+      <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalHeader}>Edit Profile</Text>
+            <Text style={styles.modalHeader}>Edit Admin Profile</Text>
 
-            <ScrollView style={{ width: "100%" }}>
+            <ScrollView>
               <Text style={styles.label}>Name</Text>
               <TextInput
                 style={styles.input}
                 value={editProfile?.name}
-                onChangeText={(text) =>
-                  setEditProfile((prev) => prev && { ...prev, name: text })
+                onChangeText={(t) =>
+                  setEditProfile((p) => p && { ...p, name: t })
                 }
               />
 
@@ -166,8 +187,8 @@ export default function Profile() {
               <TextInput
                 style={styles.input}
                 value={editProfile?.surname}
-                onChangeText={(text) =>
-                  setEditProfile((prev) => prev && { ...prev, surname: text })
+                onChangeText={(t) =>
+                  setEditProfile((p) => p && { ...p, surname: t })
                 }
               />
 
@@ -175,26 +196,28 @@ export default function Profile() {
               <TextInput
                 style={styles.input}
                 value={editProfile?.phone}
-                onChangeText={(text) =>
-                  setEditProfile((prev) => prev && { ...prev, phone: text })
+                onChangeText={(t) =>
+                  setEditProfile((p) => p && { ...p, phone: t })
                 }
               />
 
-              <Text style={styles.label}>Address</Text>
+              {/* NEW EMAIL FIELD */}
+              <Text style={styles.label}>Email</Text>
               <TextInput
                 style={styles.input}
-                value={editProfile?.address}
-                onChangeText={(text) =>
-                  setEditProfile((prev) => prev && { ...prev, address: text })
+                value={editProfile?.email}
+                onChangeText={(t) =>
+                  setEditProfile((p) => p && { ...p, email: t })
                 }
               />
 
-              <Text style={styles.label}>Card Details</Text>
+              {/* NEW ROLE FIELD */}
+              <Text style={styles.label}>Role</Text>
               <TextInput
                 style={styles.input}
-                value={editProfile?.card}
-                onChangeText={(text) =>
-                  setEditProfile((prev) => prev && { ...prev, card: text })
+                value={editProfile?.role}
+                onChangeText={(t) =>
+                  setEditProfile((p) => p && { ...p, role: t })
                 }
               />
             </ScrollView>
@@ -232,60 +255,37 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  backBtn: { alignSelf: "flex-start", marginBottom: 10 },
+  backText: { fontSize: 16, fontWeight: "bold" },
+
   header: {
     fontSize: 28,
     fontWeight: "bold",
     marginVertical: 20,
     color: "#ff6b00",
   },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-    width: "100%",
-  },
-  actionBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  actionText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-
   card: {
     width: "100%",
     backgroundColor: "#fff7f0",
     borderRadius: 16,
     padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
     elevation: 5,
   },
   label: { fontSize: 14, fontWeight: "bold", color: "#555", marginTop: 12 },
-  value: { fontSize: 16, fontWeight: "600", marginTop: 4, color: "#333" },
-  editBtn: {
+  value: { fontSize: 16, fontWeight: "600", marginTop: 4 },
+  buttonRow: {
+    flexDirection: "row",
+    width: "100%",
     marginTop: 20,
-    backgroundColor: "#ff6b00",
-    paddingVertical: 14,
-    paddingHorizontal: 50,
-    borderRadius: 12,
   },
-  editText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  logoutBtn: {
-    marginTop: 20,
-    backgroundColor: "#000",
-    paddingVertical: 14,
-    paddingHorizontal: 50,
+  actionBtn: {
+    flex: 1,
+    padding: 14,
     borderRadius: 12,
+    marginHorizontal: 5,
+    alignItems: "center",
   },
-  logoutText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  actionText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -306,18 +306,14 @@ const styles = StyleSheet.create({
     color: "#ff6b00",
   },
   input: {
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 4,
     borderWidth: 1,
     borderColor: "#ccc",
-    fontSize: 16,
+    borderRadius: 10,
+    padding: 12,
     marginBottom: 10,
   },
   modalButtons: {
     flexDirection: "row",
-    justifyContent: "space-between",
     marginTop: 20,
   },
   modalBtn: {

@@ -1,62 +1,110 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { auth, db } from "../services/firebase";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 
-interface CartItem {
+export interface CartItem {
   id: string;
   name: string;
   price: number;
+  image: string;
   quantity: number;
-  image?: string;
+  sides?: string[];
+  drinks?: { id: string; name: string; price: number }[];
+  extras?: { id: string; name: string; price: number }[];
 }
 
 interface CartState {
   items: CartItem[];
-  total: number;
-  loading: boolean;
-  error: string | null;
 }
 
 const initialState: CartState = {
   items: [],
-  total: 0,
-  loading: false,
-  error: null,
 };
 
+// 🔥 Load cart from Firestore
+export const syncCartWithFirestore = createAsyncThunk(
+  "cart/syncCartWithFirestore",
+  async (userId: string, thunkAPI) => {
+    const cartDoc = doc(db, "carts", userId);
+    const snapshot = await getDoc(cartDoc);
+
+    if (snapshot.exists()) {
+      return snapshot.data().items as CartItem[];
+    }
+    return [];
+  }
+);
+
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      if (existingItem) {
-        existingItem.quantity += action.payload.quantity;
+    addItem: (state, action: PayloadAction<CartItem>) => {
+      const existing = state.items.find((i) => i.id === action.payload.id);
+      if (existing) {
+        existing.quantity += action.payload.quantity;
       } else {
         state.items.push(action.payload);
       }
-      state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     },
-    removeFromCart: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
-      state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    removeItem: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter((i) => i.id !== action.payload);
     },
-    updateQuantity: (state, action: PayloadAction<{ id: string; quantity: number }>) => {
-      const item = state.items.find(item => item.id === action.payload.id);
-      if (item) {
-        item.quantity = action.payload.quantity;
-        state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      }
+
+    incrementQty: (state, action: PayloadAction<string>) => {
+      const item = state.items.find((i) => i.id === action.payload);
+      if (item) item.quantity += 1;
     },
+
+    decrementQty: (state, action: PayloadAction<string>) => {
+      const item = state.items.find((i) => i.id === action.payload);
+      if (item && item.quantity > 1) item.quantity -= 1;
+    },
+
     clearCart: (state) => {
       state.items = [];
-      state.total = 0;
     },
+
+    // Save cart in state
+    setCart: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
+    },
+
+    // ✅ UPDATE EXTRAS + DRINKS FOR A CART ITEM
+    updateItemExtras: (
+      state,
+      action: PayloadAction<{
+        itemId: string;
+        extras: { id: string; name: string; price: number }[];
+        drinks: { id: string; name: string; price: number }[];
+      }>
+    ) => {
+      const { itemId, extras, drinks } = action.payload;
+      const item = state.items.find((i) => i.id === itemId);
+
+      if (item) {
+        item.extras = extras;
+        item.drinks = drinks;
+      }
+    },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(syncCartWithFirestore.fulfilled, (state, action) => {
+      state.items = action.payload;
+    });
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
-
-// Additional exports for hooks compatibility
-export const addItem = addToCart;
-export const removeItem = removeFromCart;
+export const {
+  addItem,
+  removeItem,
+  incrementQty,
+  decrementQty,
+  clearCart,
+  setCart,
+  updateItemExtras, // ✅ Export it here
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

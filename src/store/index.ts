@@ -1,23 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
-import cartReducer from './cartSlice';
-import foodReducer from './foodSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import cartReducer from "./cartSlice";
+import adminMenuReducer from "./adminMenuSlice";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
-    food: foodReducer,
     cart: cartReducer,
+    adminMenu: adminMenuReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
-      },
-    }),
 });
 
+// Types for TS
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export default store;
