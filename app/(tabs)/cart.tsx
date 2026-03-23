@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getImageSource } from "../../src/constants/imageMap";
 import {
   deleteCartFromFirestore,
-  getCartFromFirestore,
-  saveCartToFirestore,
+  loadCartFromFirestore,
+  saveCartToFirestore
 } from "../../src/services/cartFirestore";
 import { auth } from "../../src/services/firebase";
 import { AppDispatch, RootState } from "../../src/store";
@@ -23,8 +23,7 @@ import {
   clearCart,
   decrementQty,
   incrementQty,
-  removeItem,
-  setCart,
+  removeItem
 } from "../../src/store/cartSlice";
 
 export default function Cart() {
@@ -45,21 +44,39 @@ export default function Cart() {
     return unsubscribe;
   }, []);
 
-  // LOAD CART FROM FIRESTORE ONLY IF USER LOGGED IN
+  // SYNC CART WITH FIRESTORE (merges local and Firestore)
   useEffect(() => {
-    if (!user) {
-      setFirstLoad(false);
-      return;
-    }
+    if (!user) return;
+    
+    const loadAndSync = async () => {
+      try {
+        // Load from Firestore
+        const firestoreItems = await loadCartFromFirestore(user.uid);
+        
+        // Merge local and Firestore carts to handle conflicts
+        const mergedItems = [...cart];
+        
+        // Add items from Firestore that aren't in local
+        firestoreItems.forEach((firestoreItem: any) => {
+          const existingLocal = cart.find((local: any) => local.id === firestoreItem.id);
+            if (!existingLocal) {
+              mergedItems.push(firestoreItem);
+            }
+        });
+        
+        // Save merged cart back to Firestore
+        await saveCartToFirestore(user.uid, mergedItems);
+        setFirstLoad(false);
+      } catch (error) {
+        console.error(" Error syncing cart:", error);
+        setFirstLoad(false);
+      }
+    };
+    
+    loadAndSync();
+  }, [user, cart]);
 
-    (async () => {
-      const firestoreCart = await getCartFromFirestore(user.uid);
-      dispatch(setCart(firestoreCart ?? []));
-      setFirstLoad(false);
-    })();
-  }, [user, dispatch]);
-
-  // SAVE CART TO FIRESTORE (ONLY IF USER LOGGED IN)
+  // SAVE CART TO FIRESTORE (on cart changes)
   useEffect(() => {
     if (!user || firstLoad) return;
     saveCartToFirestore(user.uid, cart);
