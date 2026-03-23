@@ -23,7 +23,8 @@ import {
   clearCart,
   decrementQty,
   incrementQty,
-  removeItem
+  removeItem,
+  setCart
 } from "../../src/store/cartSlice";
 
 export default function Cart() {
@@ -53,28 +54,20 @@ export default function Cart() {
         // Load from Firestore
         const firestoreItems = await loadCartFromFirestore(user.uid);
         
-        // Merge local and Firestore carts to handle conflicts
-        const mergedItems = [...cart];
+        // If we have Firestore items, update Redux state
+        if (firestoreItems && firestoreItems.length > 0) {
+          dispatch(setCart(firestoreItems));
+        }
         
-        // Add items from Firestore that aren't in local
-        firestoreItems.forEach((firestoreItem: any) => {
-          const existingLocal = cart.find((local: any) => local.id === firestoreItem.id);
-            if (!existingLocal) {
-              mergedItems.push(firestoreItem);
-            }
-        });
-        
-        // Save merged cart back to Firestore
-        await saveCartToFirestore(user.uid, mergedItems);
         setFirstLoad(false);
       } catch (error) {
-        console.error(" Error syncing cart:", error);
+        console.error(" Error loading cart:", error);
         setFirstLoad(false);
       }
     };
     
     loadAndSync();
-  }, [user, cart]);
+  }, [user, dispatch]);
 
   // SAVE CART TO FIRESTORE (on cart changes)
   useEffect(() => {

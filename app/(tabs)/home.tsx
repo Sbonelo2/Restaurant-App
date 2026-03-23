@@ -13,7 +13,9 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS, getImageSource } from "../../src/constants";
+import { saveCartToFirestore } from "../../src/services/cartFirestore";
 import { getMenuItems, MenuItem } from "../../src/services/menuServices";
+import { store } from "../../src/store";
 import { addItem } from "../../src/store/cartSlice";
 import CategoryFilter from "../components/CategoryFilter";
 import HomeHeader from "../components/HomeHeader";
@@ -80,15 +82,21 @@ export default function Home() {
     }
 
     // User is logged in, proceed with adding to cart
-    dispatch(
-      addItem({
-        id: item.id,
-        name: item.name,
-        price: item.price || 0,
-        quantity: 1,
-        image: item.image,
-      }),
-    );
+    const cartItem = {
+      id: item.id,
+      name: item.name,
+      price: item.price || 0,
+      quantity: 1,
+      image: item.image,
+    };
+    
+    dispatch(addItem(cartItem));
+    
+    // Save to Firestore immediately
+    if (user) {
+      const currentCart = store.getState().cart.items;
+      saveCartToFirestore(user.uid, [...currentCart, cartItem]);
+    }
   };
 
   const categories = [
