@@ -2,13 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-    Dimensions,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { COLORS, getImageSource } from "../../src/constants";
@@ -74,33 +74,22 @@ export default function Home() {
   const popularItems = menu.filter((i) => i.popular);
   const newItems = menu.filter((i) => i.new);
 
-  /*** HERO CAROUSEL ***/
-  const heroData = [
-    {
-      image: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
-      text: "Delicious Food",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1550547660-d9450f859349",
-      text: "Hot & Fresh",
-    },
-    {
-      image:
-        "https://images.unsplash.com/photo-1705537748124-926009973f94?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTZ8fHBpenphJTIwc3BlY2lhbHxlbnwwfHwwfHx8MA%3D%3D",
-      text: "Try Our Specials",
-    },
-  ];
+  /*** KOMEAT LOGO ***/
+  const logoData = {
+    image: require('../../assets/images/KomEat Logo.png'),
+    text: "KomEat",
+  };
 
   const heroRef = useRef<FlatList>(null);
 
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
-      index = (index + 1) % heroData.length;
+      index = (index + 1) % 1; // Only one logo item
       heroRef.current?.scrollToIndex({ index, animated: true });
     }, 3000); // auto scroll every 3 seconds
     return () => clearInterval(interval);
-  }, [heroData.length]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -112,27 +101,16 @@ export default function Home() {
           <>
             <HomeHeader onSearch={setSearchQuery} />
 
-            {/* HERO CAROUSEL */}
+            {/* KOMEAT LOGO */}
             <View style={{ marginVertical: 16 }}>
-              <FlatList
-                ref={heroRef}
-                data={heroData}
-                keyExtractor={(_, i) => i.toString()}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <View style={styles.heroCard}>
-                    <Image
-                      source={{ uri: item.image }}
-                      style={styles.heroImage}
-                    />
-                    <View style={styles.heroOverlay}>
-                      <Text style={styles.heroText}>{item.text}</Text>
-                    </View>
-                  </View>
-                )}
-              />
+              <View style={styles.logoContainer}>
+                <Image
+                  source={logoData.image}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.logoText}>{logoData.text}</Text>
+              </View>
             </View>
 
             <CategoryFilter
@@ -269,11 +247,29 @@ const styles = StyleSheet.create({
   heroOverlay: {
     position: "absolute",
     bottom: 0,
-    width: "100%",
+    left: 0,
+    right: 0,
     backgroundColor: "rgba(0,0,0,0.4)",
     padding: 12,
   },
   heroText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
+  logoContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+    backgroundColor: COLORS.surface,
+  },
+  logoImage: {
+    width: 200,
+    height: 80,
+    resizeMode: "contain",
+  },
+  logoText: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: COLORS.primary,
+    textAlign: "center",
+  },
   popularCard: {
     width: 240,
     backgroundColor: "#fff",
