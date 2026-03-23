@@ -137,27 +137,6 @@ export default function Home() {
                 />
                 <Text style={styles.logoText}>{logoData.text}</Text>
               </View>
-              
-              {/* LOGIN/REGISTER BUTTONS */}
-              {!user && (
-                <View style={styles.authContainer}>
-                  <TouchableOpacity
-                    style={[styles.authButton, styles.loginButton]}
-                    onPress={() => router.push('/auth/login')}
-                  >
-                    <Ionicons name="log-in" size={18} color={COLORS.secondary} />
-                    <Text style={styles.authButtonText}>Login</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    style={[styles.authButton, styles.registerButton]}
-                    onPress={() => router.push('/auth/register')}
-                  >
-                    <Ionicons name="person-add" size={18} color={COLORS.secondary} />
-                    <Text style={styles.authButtonText}>Register</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
             </View>
 
             <CategoryFilter
@@ -316,33 +295,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.primary,
     textAlign: "center",
-  },
-  authContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 10,
-    gap: 10,
-  },
-  authButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    minWidth: 100,
-  },
-  loginButton: {
-    backgroundColor: COLORS.primary,
-  },
-  registerButton: {
-    backgroundColor: COLORS.accent,
-  },
-  authButtonText: {
-    color: COLORS.secondary,
-    marginLeft: 8,
-    fontSize: 14,
-    fontWeight: "bold",
   },
   popularCard: {
     width: 240,
