@@ -10,6 +10,7 @@ export const IMAGE_MAP: { [key: string]: any } = {
   'Iced-Coffee.jpg': require('../../assets/images/Iced-Coffee.jpg'),
   'Pizza-Margherita.jpg': require('../../assets/images/Pizza-Margherita.jpg'),
   'orange-juice.png': require('../../assets/images/orange-juice.png'),
+  'picpasta .webp': require('../../assets/images/picpasta .webp'), // French Fries
   // Fallback image for any missing images
   'default': require('../../assets/images/KomEat Logo.png')
 };
