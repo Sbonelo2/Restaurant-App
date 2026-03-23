@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import { COLORS } from "../../src/constants";
 import { auth } from "../../src/services/firebase";
 
 export default function TabsLayout() {
@@ -29,8 +30,8 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#ff6b00",
-        headerStyle: { backgroundColor: "#ff6b00" },
+        tabBarActiveTintColor: COLORS.primary,
+        headerStyle: { backgroundColor: COLORS.primary },
         headerTintColor: "#fff",
       }}
     >

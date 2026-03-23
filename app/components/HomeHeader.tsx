@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
+import { COLORS } from "../../src/constants";
 import { RootState } from "../../src/store";
 
 export default function HomeHeader({
@@ -47,7 +48,7 @@ export default function HomeHeader({
         style={styles.cartButton}
         onPress={() => router.push("/cart")}
       >
-        <Ionicons name="cart" size={28} color="#ff6b00" />
+        <Ionicons name="cart" size={28} color={COLORS.primary} />
         {totalQuantity > 0 && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{totalQuantity}</Text>

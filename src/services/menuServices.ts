@@ -25,9 +25,9 @@ export const getMenuItems = async (): Promise<MenuItem[]> => {
       category: data.category,
       price: data.price,
       description: data.description,
-      image: data.image,
-      popular: data.popular || false, // default false if not set
-      new: data.new || false, // default false if not set
+      image: `../../src/assets/images/Komeat/${data.image}`, // Relative path from app folder
+      popular: data.popular || false,
+      new: data.new || false,
     };
   });
 };

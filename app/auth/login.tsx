@@ -2,22 +2,23 @@ import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import {
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { COLORS } from "../../src/constants";
 import { auth } from "../../src/services/firebase";
 
 // Firestore imports
 import {
-    collection,
-    getDocs,
-    getFirestore,
-    query,
-    where,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
 } from "firebase/firestore";
 
 export default function Login() {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 30,
-    color: "#FF6B00",
+    color: COLORS.primary,
     textAlign: "center",
   },
   input: {
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fdfdfd",
   },
   button: {
-    backgroundColor: "#FF6B00",
+    backgroundColor: COLORS.primary,
     padding: 16,
     borderRadius: 12,
     width: "100%",
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   link: {
     textAlign: "center",
     marginTop: 20,
-    color: "#FF6B00",
+    color: COLORS.primary,
     fontWeight: "bold",
   },
 });

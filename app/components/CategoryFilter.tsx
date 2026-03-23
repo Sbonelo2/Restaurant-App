@@ -1,11 +1,12 @@
 // app/components/CategoryFilter.tsx
 import React from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
 } from "react-native";
+import { COLORS } from "../../src/constants";
 
 interface CategoryFilterProps {
   categories: string[];
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#eee",
     marginRight: 10,
   },
-  selectedButton: { backgroundColor: "#ff6b00" },
+  selectedButton: { backgroundColor: COLORS.primary },
   text: { color: "#333", fontWeight: "bold" },
-  selectedText: { color: "#fff" },
+  selectedText: { color: COLORS.secondary },
 });

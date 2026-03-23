@@ -1,5 +1,6 @@
 import React from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { COLORS } from "../../src/constants";
 
 // Mock implementation for react-native-paystack-webview
 const usePaystack = () => ({
@@ -61,7 +62,7 @@ export default Checkout;
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#ff6b00",
+    backgroundColor: COLORS.primary,
     padding: 16,
     borderRadius: 12,
     alignItems: "center",

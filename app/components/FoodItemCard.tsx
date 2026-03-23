@@ -1,6 +1,7 @@
 // app/components/FoodItemCard.tsx
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { COLORS } from "../../src/constants";
 
 interface FoodItemCardProps {
   name: string;
@@ -44,5 +45,5 @@ const styles = StyleSheet.create({
   info: { flex: 1, padding: 10, justifyContent: "space-between" },
   name: { fontWeight: "bold", fontSize: 16 },
   description: { fontSize: 12, color: "#555" },
-  price: { fontWeight: "bold", color: "#ff6b00", fontSize: 14 },
+  price: { fontWeight: "bold", color: COLORS.primary, fontSize: 14 },
 });

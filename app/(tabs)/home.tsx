@@ -11,6 +11,7 @@ import {
     View,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import { COLORS } from "../../src/constants";
 import { getMenuItems, MenuItem } from "../../src/services/menuServices";
 import { addItem } from "../../src/store/cartSlice";
 import CategoryFilter from "../components/CategoryFilter";
@@ -285,12 +286,12 @@ const styles = StyleSheet.create({
   info: { padding: 14 },
   name: { fontSize: 18, fontWeight: "bold" },
   desc: { color: "#777", marginVertical: 6 },
-  price: { color: "#ff6b00", fontWeight: "bold" },
+  price: { color: COLORS.primary, fontWeight: "bold" },
   addCartBtn: {
     position: "absolute",
     right: 14,
     bottom: 2,
-    backgroundColor: "#ff6b00",
+    backgroundColor: COLORS.primary,
     flexDirection: "row",
     padding: 6,
     borderRadius: 20,
