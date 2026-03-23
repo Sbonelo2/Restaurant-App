@@ -1,11 +1,10 @@
 // app/components/CategoryFilter.tsx
 import React from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
 } from "react-native";
 
 interface CategoryFilterProps {

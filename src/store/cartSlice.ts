@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { auth, db } from "../services/firebase";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
 
 export interface CartItem {
   id: string;

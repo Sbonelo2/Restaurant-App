@@ -2,22 +2,22 @@ import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { auth } from "../../src/services/firebase";
 
 // Firestore imports
 import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
+    collection,
+    getDocs,
+    getFirestore,
+    query,
+    where,
 } from "firebase/firestore";
 
 export default function Login() {
@@ -63,7 +63,7 @@ export default function Login() {
     <View style={styles.container}>
       {/* Logo */}
       <Image
-        source={require("../../assets/images/logo.png")}
+        source={require("../../assets/images/KomEat Logo.png")}
         style={styles.logo}
         resizeMode="contain"
       />
@@ -91,7 +91,7 @@ export default function Login() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/auth/register")}>
-        <Text style={styles.link}>Don't have an account? Register</Text>
+        <Text style={styles.link}>Don&apos;t have an account? Register</Text>
       </TouchableOpacity>
     </View>
   );

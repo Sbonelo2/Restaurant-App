@@ -1,35 +1,19 @@
+import { ExpoRoot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { COLORS } from './src/constants';
 import { store } from './src/store';
 
+// Must be exported from App.js
 export default function App() {
   return (
     <Provider store={store}>
-      <SafeAreaView style={styles.container}>
-        <StatusBar 
-          style="light" 
-          backgroundColor={COLORS.primary}
-          translucent={false}
-        />
-        <View style={styles.content}>
-          {/* The main app content will be rendered by the Expo Router */}
-          {/* This includes navigation, screens, and all app functionality */}
-        </View>
-      </SafeAreaView>
+      <ExpoRoot context={require.context('./app')} />
+      <StatusBar 
+        style="light" 
+        backgroundColor={COLORS.primary}
+        translucent={false}
+      />
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-});

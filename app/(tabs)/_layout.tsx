@@ -1,11 +1,10 @@
-import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { Tabs, useRouter } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../src/services/firebase";
 import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import { auth } from "../../src/services/firebase";
 
 export default function TabsLayout() {
   const router = useRouter();
@@ -42,7 +41,7 @@ export default function TabsLayout() {
           headerTitle: () => (
             <View style={styles.headerContainer}>
               <Image
-                source={require("../../assets/images/logo.png")}
+                source={require("../../assets/images/KomEat Logo.png")}
                 style={styles.logo}
                 resizeMode="contain"
               />
@@ -62,7 +61,7 @@ export default function TabsLayout() {
           headerTitle: () => (
             <View style={styles.headerContainer}>
               <Image
-                source={require("../../assets/images/logo.png")}
+                source={require("../../assets/images/KomEat Logo.png")}
                 style={styles.logo}
                 resizeMode="contain"
               />
@@ -93,7 +92,7 @@ export default function TabsLayout() {
           headerTitle: () => (
             <View style={styles.headerContainer}>
               <Image
-                source={require("../../assets/images/logo.png")}
+                source={require("../../assets/images/KomEat Logo.png")}
                 style={styles.logo}
                 resizeMode="contain"
               />

@@ -1,21 +1,18 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  ActivityIndicator,
+    ActivityIndicator,
+    Dimensions,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { collection, getDocs } from "firebase/firestore";
+import { PieChart } from "react-native-chart-kit";
 import { db } from "../../src/services/firebase";
-import { PieChart, ProgressChart } from "react-native-chart-kit";
-
-
-
 
 const screenWidth = Dimensions.get("window").width;
 

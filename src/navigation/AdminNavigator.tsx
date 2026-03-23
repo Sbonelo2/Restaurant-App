@@ -1,8 +1,7 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DashboardScreen from '../screens/admin/DashboardScreen';
-import ManageFoodScreen from '../screens/admin/ManageFoodScreen';
-import OrdersScreen from '../screens/admin/OrdersScreen';
+import DashboardScreen from '../../app/admin/dashboard';
+import ManageFoodScreen from '../../app/admin/manageMenu';
+import OrdersScreen from '../../app/admin/orders';
 
 const Stack = createNativeStackNavigator();
 
