@@ -1,10 +1,9 @@
 import React from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { COLORS } from "../../src/constants";
-import PayUService, { PayUPaymentData } from "../../src/services/payuService";
+import PaystackService from "../../src/services/paystackService";
 
-// Mock implementation for react-native-paystack-webview
-
+// Paystack payment implementation
 interface CheckoutProps {
   email: string;
   totalAmount: number; // in Rand
@@ -18,85 +17,78 @@ const Checkout: React.FC<CheckoutProps> = ({
 }) => {
   const [isProcessing, setIsProcessing] = React.useState(false);
 
-  const handlePayUPayment = async () => {
+  const handlePaystackPayment = async () => {
     if (isProcessing) return; // Prevent multiple clicks
     
-    console.log("🔥 PayU button clicked!");
+    console.log("🔥 Paystack button clicked!");
     console.log("Email:", email);
     console.log("Amount:", totalAmount);
     
     setIsProcessing(true);
     
     try {
-      // Generate unique transaction ID
-      const transactionId = `KOM${Date.now()}`;
+      // Generate unique transaction reference
+      const reference = `KOM${Date.now()}`;
       
-      // PayU requires amount in cents (multiply by 100)
-      const amountInCents = Math.round(totalAmount * 100);
-
       // Calculate fees
-      const fees = PayUService.calculateFees(amountInCents);
+      const fees = PaystackService.calculatePaystackFees(totalAmount);
 
-      // Create payment data
-      const paymentData: PayUPaymentData = {
-        merchantId: PayUService.isSandboxMode() ? "10000001" : "",
-        merchantKey: PayUService.isSandboxMode() ? "testKey123" : "",
-        return_url: "https://komEat.app/payment/return",
-        cancel_url: "https://komEat.app/payment/cancel",
-        notify_url: "https://komEat.app/payment/notify",
-        email_address: email,
-        amount: amountInCents,
-        item_name: `KomEat Order ${transactionId}`,
-        item_description: `Order payment for KomEat restaurant - R${totalAmount.toFixed(2)}`,
-        m_payment_id: transactionId,
-        name_first: "Customer",
-        name_last: "Name",
-        custom_str1: "mobile_app",
-        custom_str2: "komEat_order",
-        custom_int1: Date.now().toString(),
-      };
-
-      console.log("🚀 Initiating PayU payment:", paymentData);
+      console.log("🚀 Initiating Paystack payment with reference:", reference);
       console.log("💳 Payment fees:", fees);
-      
-      // Process payment with PayU
-      await PayUService.processPayment(paymentData);
-      
-      // On successful payment
-      console.log("✅ PayU Payment Success - Transaction ID:", transactionId);
-      
-      // Call onSuccess with proper error handling
-      try {
-        await onSuccess();
-      } catch (orderError) {
-        console.error("Order creation failed:", orderError);
-        throw orderError; // Re-throw to be caught by outer try-catch
-      }
-      
-      Alert.alert(
-        "Payment Successful", 
-        `Your order has been placed!\n\nTransaction ID: ${transactionId}\nAmount: R ${totalAmount.toFixed(2)}\nPayment Method: PayU South Africa\n\nFees: R${(fees.totalFees / 100).toFixed(2)}\nNet Amount: R${(fees.netAmount / 100).toFixed(2)}`
+
+      // Initialize Paystack payment
+      const result = await PaystackService.initializePaystackPayment(
+        email,
+        totalAmount,
+        reference,
+        {
+          order_id: reference,
+          restaurant: "KomEat",
+          amount: totalAmount,
+          fees: fees.totalFee,
+        }
       );
 
+      if (result.success) {
+        console.log("✅ Paystack payment initiated successfully");
+        
+        Alert.alert(
+          "Payment Successful", 
+          `Your order has been placed!\n\nTransaction Reference: ${reference}\nAmount: R ${totalAmount.toFixed(2)}\nPayment Method: Paystack\n\nFees: R ${fees.totalFee.toFixed(2)}\nTotal Paid: R ${fees.totalWithFees.toFixed(2)}`
+        );
+        
+        await onSuccess();
+      } else {
+        console.error("❌ Paystack payment failed:", result.error);
+        Alert.alert(
+          "Payment Failed",
+          result.error || "Payment could not be processed. Please try again.",
+          [{ text: "OK" }]
+        );
+      }
     } catch (error) {
-      console.error("PayU payment error:", error);
-      Alert.alert("Payment Error", "Failed to process payment. Please try again.");
+      console.error("❌ Paystack payment error:", error);
+      Alert.alert(
+        "Payment Error",
+        "An error occurred while processing your payment. Please try again.",
+        [{ text: "OK" }]
+      );
     } finally {
       setIsProcessing(false);
     }
   };
 
-  console.log("🔥 Checkout component rendering with PayU South Africa");
+  console.log("🔥 Checkout component rendering with Paystack");
   
   return (
     <TouchableOpacity 
       style={[styles.button, isProcessing && styles.buttonDisabled]} 
-      onPress={handlePayUPayment}
+      onPress={handlePaystackPayment}
       disabled={isProcessing}
       activeOpacity={0.8}
     >
       <Text style={styles.buttonText}>
-        {isProcessing ? "Processing..." : "Pay with PayU South Africa"}
+        {isProcessing ? "Processing..." : "Pay with Paystack"}
       </Text>
     </TouchableOpacity>
   );
