@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -10,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { COLORS, getImageSource } from "../../src/constants";
 import { getMenuItems, MenuItem } from "../../src/services/menuServices";
 import { addItem } from "../../src/store/cartSlice";
@@ -22,6 +23,7 @@ const { width: screenWidth } = Dimensions.get("window");
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.auth.user);
 
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -54,6 +56,30 @@ export default function Home() {
   }, [menu, selectedCategory, searchQuery]);
 
   const handleAddToCart = (item: MenuItem) => {
+    if (!user) {
+      // Show login/register prompt
+      Alert.alert(
+        "Login Required",
+        "Please login or register to add items to cart",
+        [
+          {
+            text: "Login",
+            onPress: () => router.push('/auth/login')
+          },
+          {
+            text: "Register", 
+            onPress: () => router.push('/auth/register')
+          },
+          {
+            text: "Cancel",
+            style: "cancel"
+          }
+        ]
+      );
+      return;
+    }
+
+    // User is logged in, proceed with adding to cart
     dispatch(
       addItem({
         id: item.id,
@@ -111,6 +137,27 @@ export default function Home() {
                 />
                 <Text style={styles.logoText}>{logoData.text}</Text>
               </View>
+              
+              {/* LOGIN/REGISTER BUTTONS */}
+              {!user && (
+                <View style={styles.authContainer}>
+                  <TouchableOpacity
+                    style={[styles.authButton, styles.loginButton]}
+                    onPress={() => router.push('/auth/login')}
+                  >
+                    <Ionicons name="log-in" size={18} color={COLORS.secondary} />
+                    <Text style={styles.authButtonText}>Login</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={[styles.authButton, styles.registerButton]}
+                    onPress={() => router.push('/auth/register')}
+                  >
+                    <Ionicons name="person-add" size={18} color={COLORS.secondary} />
+                    <Text style={styles.authButtonText}>Register</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
 
             <CategoryFilter
@@ -269,6 +316,33 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.primary,
     textAlign: "center",
+  },
+  authContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+    gap: 10,
+  },
+  authButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    minWidth: 100,
+  },
+  loginButton: {
+    backgroundColor: COLORS.primary,
+  },
+  registerButton: {
+    backgroundColor: COLORS.accent,
+  },
+  authButtonText: {
+    color: COLORS.secondary,
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: "bold",
   },
   popularCard: {
     width: 240,
