@@ -3,15 +3,15 @@ import { getAuth, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { db } from "../../src/services/firebase";
 
@@ -262,6 +262,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff7f0",
     borderRadius: 16,
     padding: 20,
+    // Web-compatible shadow
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    // Keep native shadow for mobile
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },

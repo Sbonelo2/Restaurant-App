@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert,
-} from "react-native";
 import { useRouter } from "expo-router";
 import { getAuth, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Alert,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { db } from "../../src/services/firebase";
 
-interface AdminProfile {
+interface AdminProfileData {
   name: string;
   surname: string;
   email: string;
@@ -28,8 +28,8 @@ export default function AdminProfile() {
   const auth = getAuth();
   const router = useRouter();
 
-  const [profile, setProfile] = useState<AdminProfile | null>(null);
-  const [editProfile, setEditProfile] = useState<AdminProfile | null>(null);
+  const [profile, setProfile] = useState<AdminProfileData | null>(null);
+  const [editProfile, setEditProfile] = useState<AdminProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -47,10 +47,10 @@ export default function AdminProfile() {
         const snap = await getDoc(ref);
 
         if (snap.exists()) {
-          setProfile(snap.data() as AdminProfile);
+          setProfile(snap.data() as AdminProfileData);
         } else {
           // first time admin
-          const newProfile: AdminProfile = {
+          const newProfile: AdminProfileData = {
             name: "",
             surname: "",
             email: user.email || "",

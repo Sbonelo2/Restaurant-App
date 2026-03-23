@@ -1,30 +1,30 @@
 import { useRouter } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    FlatList,
+    Image,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import {
+    deleteCartFromFirestore,
+    getCartFromFirestore,
+    saveCartToFirestore,
+} from "../../src/services/cartFirestore";
+import { auth } from "../../src/services/firebase";
 import { AppDispatch, RootState } from "../../src/store";
 import {
-  clearCart,
-  decrementQty,
-  incrementQty,
-  removeItem,
-  setCart,
+    clearCart,
+    decrementQty,
+    incrementQty,
+    removeItem,
+    setCart,
 } from "../../src/store/cartSlice";
-import { auth } from "../../src/services/firebase";
-import {
-  saveCartToFirestore,
-  deleteCartFromFirestore,
-  getCartFromFirestore,
-} from "../../src/services/cartFirestore";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function Cart() {
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -56,7 +56,7 @@ export default function Cart() {
       dispatch(setCart(firestoreCart ?? []));
       setFirstLoad(false);
     })();
-  }, [user]);
+  }, [user, dispatch]);
 
   // SAVE CART TO FIRESTORE (ONLY IF USER LOGGED IN)
   useEffect(() => {

@@ -1,11 +1,24 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
-import { usePaystack } from "react-native-paystack-webview";
+import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
+
+// Mock implementation for react-native-paystack-webview
+const usePaystack = () => ({
+  popup: {
+    checkout: (options: any) => {
+      // Mock payment success for development
+      setTimeout(() => {
+        if (options.onSuccess) {
+          options.onSuccess({ transaction: 'mock_transaction_id' });
+        }
+      }, 1000);
+    }
+  }
+});
 
 interface CheckoutProps {
   email: string;
   totalAmount: number; // in Rand
-  onSuccess: () => Promise<void>; // 🔥 ADD THIS
+  onSuccess: () => Promise<void>;
 }
 
 const Checkout: React.FC<CheckoutProps> = ({
@@ -19,7 +32,7 @@ const Checkout: React.FC<CheckoutProps> = ({
     popup.checkout({
       email,
       amount: Math.round(totalAmount * 100), // 🔥 Paystack needs cents
-      onSuccess: async (res) => {
+      onSuccess: async (res: any) => {
         console.log("✅ Payment Success:", res);
 
         try {

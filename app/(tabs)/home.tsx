@@ -57,7 +57,7 @@ export default function Home() {
       addItem({
         id: item.id,
         name: item.name,
-        price: item.price,
+        price: item.price || 0,
         quantity: 1,
         image: item.image,
       }),
@@ -99,7 +99,7 @@ export default function Home() {
       heroRef.current?.scrollToIndex({ index, animated: true });
     }, 3000); // auto scroll every 3 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [heroData.length]);
 
   return (
     <View style={styles.container}>
@@ -231,7 +231,7 @@ export default function Home() {
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.desc}>{item.description}</Text>
-              <Text style={styles.price}>R {item.price.toFixed(2)}</Text>
+              <Text style={styles.price}>R {item.price?.toFixed(2) || '0.00'}</Text>
 
               <TouchableOpacity
                 style={styles.addCartBtn}

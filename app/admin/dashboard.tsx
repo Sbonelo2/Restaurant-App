@@ -69,17 +69,17 @@ export default function AdminDashboard() {
   ];
 
   // Bar chart placeholder data – daily activity
-  const dailyData = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        data: [2, 3, 1, 4, 5, 0, 2], // Replace with real daily counts from Firebase if available
-      },
-    ],
-  };
+  // const dailyData = {
+  //   labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  //   datasets: [
+  //     {
+  //       data: [2, 3, 1, 4, 5, 0, 2], // Replace with real daily counts from Firebase if available
+  //     },
+  //   ],
+  // };
 
   // Progress chart data – popular items ratio
-  const progressData = { data: [menuCount > 0 ? popularCount / menuCount : 0] };
+  // const progressData = { data: [menuCount > 0 ? popularCount / menuCount : 0] };
 
   if (loading) {
     return (
