@@ -215,6 +215,13 @@ export default function Home() {
                         <Text style={styles.price}>
                           R {item.price.toFixed(2)}
                         </Text>
+                        <TouchableOpacity
+                          style={styles.addCartBtn}
+                          onPress={() => handleAddToCart(item)}
+                        >
+                          <Ionicons name="cart" size={18} color="#fff" />
+                          <Text style={styles.addCartText}>Add</Text>
+                        </TouchableOpacity>
                       </View>
                     </TouchableOpacity>
                   )}
