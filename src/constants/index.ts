@@ -12,3 +12,6 @@ export const COLORS = {
   warning: '#FF9800',
   info: '#2196F3',
 };
+
+// Export getImageSource from imageMap
+export { getImageSource } from './imageMap';

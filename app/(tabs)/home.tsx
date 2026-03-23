@@ -11,7 +11,7 @@ import {
     View,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { COLORS } from "../../src/constants";
+import { COLORS, getImageSource } from "../../src/constants";
 import { getMenuItems, MenuItem } from "../../src/services/menuServices";
 import { addItem } from "../../src/store/cartSlice";
 import CategoryFilter from "../components/CategoryFilter";
@@ -161,7 +161,7 @@ export default function Home() {
                       }
                     >
                       <Image
-                        source={{ uri: item.image }}
+                        source={getImageSource(item.image)}
                         style={styles.popularImage}
                       />
                       <View style={styles.info}>
@@ -203,7 +203,7 @@ export default function Home() {
                       }
                     >
                       <Image
-                        source={{ uri: item.image }}
+                        source={getImageSource(item.image)}
                         style={styles.popularImage}
                       />
                       <View style={styles.info}>
@@ -228,7 +228,7 @@ export default function Home() {
               router.push({ pathname: "/food/[id]", params: { id: item.id } })
             }
           >
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image source={getImageSource(item.image)} style={styles.image} />
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.desc}>{item.description}</Text>

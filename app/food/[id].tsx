@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import {
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../src/services/firebase";
+import React, { useEffect, useState } from "react";
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { useDispatch } from "react-redux";
+import { getImageSource } from "../../src/constants/imageMap";
+import { db } from "../../src/services/firebase";
 import { addItem } from "../../src/store/cartSlice";
 import CartIcon from "../components/CartIcon";
-import { Ionicons } from "@expo/vector-icons";
-
 
 interface FoodItem {
   id: string;
@@ -134,7 +134,7 @@ export default function FoodDetails() {
         <CartIcon />
       </View>
 
-      <Image source={{ uri: food.image }} style={styles.image} />
+      <Image source={getImageSource(food.image)} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.name}>{food.name}</Text>
         <Text style={styles.desc}>{food.description}</Text>

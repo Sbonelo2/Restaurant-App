@@ -25,7 +25,7 @@ export const getMenuItems = async (): Promise<MenuItem[]> => {
       category: data.category,
       price: data.price,
       description: data.description,
-      image: `../../src/assets/images/Komeat/${data.image}`, // Relative path from app folder
+      image: data.image, // Just return the filename, getImageSource will handle the mapping
       popular: data.popular || false,
       new: data.new || false,
     };
