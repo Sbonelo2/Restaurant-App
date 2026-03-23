@@ -2,28 +2,29 @@ import { useRouter } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { getImageSource } from "../../src/constants/imageMap";
 import {
-    deleteCartFromFirestore,
-    getCartFromFirestore,
-    saveCartToFirestore,
+  deleteCartFromFirestore,
+  getCartFromFirestore,
+  saveCartToFirestore,
 } from "../../src/services/cartFirestore";
 import { auth } from "../../src/services/firebase";
 import { AppDispatch, RootState } from "../../src/store";
 import {
-    clearCart,
-    decrementQty,
-    incrementQty,
-    removeItem,
-    setCart,
+  clearCart,
+  decrementQty,
+  incrementQty,
+  removeItem,
+  setCart,
 } from "../../src/store/cartSlice";
 
 export default function Cart() {
@@ -97,7 +98,7 @@ export default function Cart() {
         contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image source={getImageSource(item.image)} style={styles.image} />
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
 

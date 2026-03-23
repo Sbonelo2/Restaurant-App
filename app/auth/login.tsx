@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { COLORS } from "../../src/constants";
 import { auth } from "../../src/services/firebase";
+import { setUser } from "../../src/store/authSlice";
 
 // Firestore imports
 import {
@@ -23,6 +25,7 @@ import {
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,8 +37,19 @@ export default function Login() {
         password
       );
 
+      // Get user data
+      const user = userCredential.user;
+      
+      // Update Redux store with user data
+      dispatch(setUser({
+        uid: user.uid,
+        email: user.email || "",
+        displayName: user.displayName || "",
+        role: 'customer'
+      }));
+
       // Get user email
-      const userEmail = userCredential.user.email;
+      const userEmail = user.email;
 
       // Firestore database
       const db = getFirestore();
