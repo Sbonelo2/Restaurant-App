@@ -4,8 +4,8 @@ import {
   collection,
   doc,
   getDoc,
-  updateDoc,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,11 +17,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCartFromFirestore } from "../../src/services/cartFirestore";
 import { auth, db } from "../../src/services/firebase";
 import { RootState } from "../../src/store";
 import { clearCart } from "../../src/store/cartSlice";
-import { deleteCartFromFirestore } from "../../src/services/cartFirestore";
 import Checkout from "../components/checkout";
 
 export default function CheckoutScreen() {

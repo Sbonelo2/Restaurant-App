@@ -286,6 +286,12 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   heroText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
+  logoText: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: COLORS.primary,
+    textAlign: "center",
+  },
   logoContainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -296,12 +302,6 @@ const styles = StyleSheet.create({
     width: 200,
     height: 80,
     resizeMode: "contain",
-  },
-  logoText: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: COLORS.primary,
-    textAlign: "center",
   },
   popularCard: {
     width: 240,
