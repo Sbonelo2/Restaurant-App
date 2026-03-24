@@ -89,7 +89,7 @@ export default function Profile() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#ff6b00" />
+        <ActivityIndicator size="large" color="#000000" />
       </View>
     );
   }
@@ -133,14 +133,14 @@ export default function Profile() {
 
       <View style={styles.buttonRow}>
         <TouchableOpacity
-          style={[styles.actionBtn, { backgroundColor: "#ff6b00" }]}
+          style={[styles.actionBtn, { backgroundColor: "#000000" }]}
           onPress={openEditModal}
         >
           <Text style={styles.actionText}>Edit Profile</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.actionBtn, { backgroundColor: "#000" }]}
+          style={[styles.actionBtn, { backgroundColor: "#333333" }]}
           onPress={handleLogout}
         >
           <Text style={styles.actionText}>Logout</Text>
@@ -201,7 +201,7 @@ export default function Profile() {
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#ff6b00" }]}
+                style={[styles.modalBtn, { backgroundColor: "#000000" }]}
                 onPress={handleSave}
                 disabled={saving}
               >
@@ -211,7 +211,7 @@ export default function Profile() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#ccc" }]}
+                style={[styles.modalBtn, { backgroundColor: "#666666" }]}
                 onPress={() => setModalVisible(false)}
               >
                 <Text style={styles.modalBtnText}>Cancel</Text>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
     paddingBottom: 40,
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     marginVertical: 20,
-    color: "#ff6b00",
+    color: "#000000",
   },
   buttonRow: {
     flexDirection: "row",
@@ -250,6 +250,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   actionText: {
     color: "#fff",
@@ -259,7 +264,7 @@ const styles = StyleSheet.create({
 
   card: {
     width: "100%",
-    backgroundColor: "#fff7f0",
+    backgroundColor: "#ffffff",
     borderRadius: 16,
     padding: 20,
     // Web-compatible shadow
@@ -270,12 +275,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
-  label: { fontSize: 14, fontWeight: "bold", color: "#555", marginTop: 12 },
-  value: { fontSize: 16, fontWeight: "600", marginTop: 4, color: "#333" },
+  label: { fontSize: 14, fontWeight: "bold", color: "#333333", marginTop: 12 },
+  value: { fontSize: 16, fontWeight: "600", marginTop: 4, color: "#000000" },
   editBtn: {
     marginTop: 20,
-    backgroundColor: "#ff6b00",
+    backgroundColor: "#000000",
     paddingVertical: 14,
     paddingHorizontal: 50,
     borderRadius: 12,
@@ -283,7 +290,7 @@ const styles = StyleSheet.create({
   editText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   logoutBtn: {
     marginTop: 20,
-    backgroundColor: "#000",
+    backgroundColor: "#333333",
     paddingVertical: 14,
     paddingHorizontal: 50,
     borderRadius: 12,
@@ -297,24 +304,26 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "90%",
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     borderRadius: 16,
     padding: 20,
     maxHeight: "80%",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
   modalHeader: {
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#ff6b00",
+    color: "#000000",
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
     padding: 12,
     borderRadius: 10,
     marginTop: 4,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#e0e0e0",
     fontSize: 16,
     marginBottom: 10,
   },
@@ -329,6 +338,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 5,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   modalBtnText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });
