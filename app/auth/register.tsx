@@ -159,11 +159,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    backgroundColor: "#ff6b00",
+    backgroundColor: "#000000",
     padding: 15,
     borderRadius: 10,
     marginTop: 10,
   },
   buttonText: { color: "#fff", textAlign: "center", fontWeight: "bold" },
-  link: { textAlign: "center", marginTop: 15, color: "#ff6b00" },
+  link: { textAlign: "center", marginTop: 15, color: "#000000" },
 });
