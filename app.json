@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "KomEat",
-    "slug": "komEat",
+    "slug": "komeat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "komEat",
+    "icon": "./assets/images/KomEat Logo.png",
+    "scheme": "komeat",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -22,8 +22,7 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "static",
-      "favicon": "./favicon.ico"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
